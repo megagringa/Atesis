@@ -1,0 +1,5 @@
+@media only screen and (max-width: 600px) {
+    .card .checkOut .buttons div {
+        flex: 0 0 100%;
+    }
+}

@@ -1,0 +1,52 @@
+body {
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+}
+
+.notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.notifications h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+#notification-list {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#notification-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #555;
+    border-radius: 5px;
+}
+
+/* Agrega este bloque para las notificaciones específicas */
+#notification-list li.call-waiter {
+    background-color: #3498db; /* Azul */
+}
+
+#notification-list li.order-request {
+    background-color: #27ae60; /* Verde */
+}
+
+#notification-list li.bill-request {
+    background-color: #e74c3c; /* Rojo */
+}
+
+#notification-list li.order-canceled {
+    background-color: #f39c12; /* Amarillo */
+}
