@@ -11,6 +11,9 @@ let callWaiterBtn = document.querySelector('.callWaiter');
 let orderBeerBtn = document.querySelector('.orderBeer');
 let requestBillButton = document.querySelector('.requestBill');
 
+// ... (resto del código)
+
+
 openShopping.addEventListener('click', () => {
     body.classList.add('active');
 });
@@ -122,39 +125,138 @@ let products = [
     },
 ];
 
+let drinks = [
+    {
+        id: 13,
+        name: 'Agua Mineral',
+        Image: 'agua.jpg',
+        price: 500,
+    },
+    {
+        id: 14,
+        name: 'Coca-Cola',
+        Image: 'cocacola.jpg',
+        price: 700,
+    },
+    {
+        id: 15,
+        name: 'Jugo de Naranja',
+        Image: 'jugo_naranja.jpg',
+        price: 800,
+    },
+    // Puedes agregar más bebidas según sea necesario
+];
+
 let listCards = [];
+
 function initApp() {
-    products.forEach((value, key) => {
+    initMenu('food', products);
+    initMenu('drink', drinks);
+}
+
+function initMenu(menuType, menuItems) {
+    let menuContainer = document.getElementById(`${menuType}Menu`);
+    menuContainer.innerHTML = ''; // Limpiar el contenido existente
+
+    menuItems.forEach((value, key) => {
         let newDiv = document.createElement('div');
         newDiv.classList.add('item');
         newDiv.innerHTML = `
-            <img src="image/${value.Image}"/>
+            <img class="menu-item" src="image/${value.Image}"/>
             <div class="title">${value.name}</div>
-            <div class="price">${value.price.toLocaleString()}</div>
-            <button onclick="addToCard(${key})">Agregar al Carrito</button>
+            <div class="price">$${value.price.toLocaleString()}</div>
+            <button onclick="addToCard(${value.id})">Agregar al Carrito</button>
         `;
-        list.appendChild(newDiv);
+        menuContainer.appendChild(newDiv);
     });
 }
-initApp();
 
-function addToCard(key) {
-    let existingProduct = listCards.find((product) => product.id === products[key].id);
+// ... (tu código existente)
 
-    if (existingProduct) {
-        existingProduct.quantity++;
+function addToCard(id) {
+    let menuType = id <= products.length ? 'food' : 'drink';
+
+    if (menuType === 'food') {
+        addToFoodCard(id);
+    } else {
+        addToDrinkCard(id);
+    }
+}
+
+function addToFoodCard(id) {
+    let menuIndex = id - 1;
+    let existingProductIndex = listCards.findIndex((product) => product.id === id && product.menuType === 'food');
+
+    if (existingProductIndex !== -1) {
+        listCards[existingProductIndex].quantity++;
+        listCards[existingProductIndex].price = listCards[existingProductIndex].quantity * getMenuPrice('food', menuIndex);
     } else {
         let newProduct = {
-            id: products[key].id,
-            name: products[key].name,
-            Image: products[key].Image,
-            price: products[key].price,
+            id: id,
+            menuType: 'food',
+            name: getMenuName('food', menuIndex),
+            Image: getMenuImage('food', menuIndex),
+            price: getMenuPrice('food', menuIndex),
             quantity: 1,
         };
         listCards.push(newProduct);
     }
 
     reloadCard();
+}
+
+function addToDrinkCard(id) {
+    let menuIndex = id - products.length - 1;
+    if (menuIndex < 0) {
+        menuIndex = id - 1;
+    }
+
+    let existingProductIndex = listCards.findIndex((product) => product.id === id && product.menuType === 'drink');
+
+    if (existingProductIndex !== -1) {
+        listCards[existingProductIndex].quantity++;
+        listCards[existingProductIndex].price = listCards[existingProductIndex].quantity * getMenuPrice('drink', menuIndex);
+    } else {
+        let newProduct = {
+            id: id,
+            menuType: 'drink',
+            name: getMenuName('drink', menuIndex),
+            Image: getMenuImage('drink', menuIndex),
+            price: getMenuPrice('drink', menuIndex),
+            quantity: 1,
+        };
+        listCards.push(newProduct);
+    }
+
+    reloadCard();
+}
+
+
+function getMenuPriceById(id) {
+    let menuType = id <= products.length ? 'food' : 'drink';
+    let menuIndex = id <= products.length ? id - 1 : id - products.length - 1;
+
+    return getMenuPrice(menuType, menuIndex);
+}
+
+// ... (tu código existente)
+
+
+
+
+
+
+
+function getMenuName(menuType, index) {
+    return menuType === 'food' ? products[index].name : drinks[index].name;
+}
+
+function getMenuImage(menuType, index) {
+    return menuType === 'food' ? products[index].Image : drinks[index].Image;
+}
+
+function getMenuPrice(menuType, index) {
+   return menuType === 'food' ? products[index].price : drinks[index].price;
 }
 
 function reloadCard() {
@@ -170,7 +272,7 @@ function reloadCard() {
             newDiv.innerHTML = `
                 <div><img src="image/${value.Image}"/></div>
                 <div>${value.name}</div>
-                <div>${value.price.toLocaleString()}</div>
+                <div>$${value.price.toLocaleString()}</div>
                 
                 <div>
                     <button onclick="changeQuantity(${key}, ${value.quantity - 1})">-</button>
@@ -181,7 +283,7 @@ function reloadCard() {
             listCard.appendChild(newDiv);
         }
     });
-    total.innerHTML = totalPrice.toLocaleString();
+    total.innerHTML = `$${totalPrice.toLocaleString()}`;
     quantity.innerHTML = count;
 }
 
@@ -189,10 +291,18 @@ function changeQuantity(key, quantity) {
     if (quantity === 0) {
         listCards.splice(key, 1);
     } else {
-        listCards[key].quantity = quantity;
-        listCards[key].price = quantity * products[key].price;
+        let product = listCards[key];
+        product.quantity = quantity;
+        product.price = quantity * getMenuPriceById(product.id);
     }
     reloadCard();
+}
+
+function getMenuPriceById(id) {
+    let menuType = id <= products.length ? 'food' : 'drink';
+    let menuIndex = id <= products.length ? id - 1 : id - products.length - 1;
+
+    return getMenuPrice(menuType, menuIndex);
 }
 
 function divideBill(people) {
@@ -201,7 +311,44 @@ function divideBill(people) {
     let dividedTotal = total.textContent.replace(/,/g, '') / people;
     dividedTotal = dividedTotal.toFixed(2);
 
-    alert(`Each person pays: $${dividedTotal}`);
+    alert(`Cada persona paga: $${dividedTotal}`);
 }
+
+function showMenu(menuType) {
+    if (menuType === 'food') {
+        document.getElementById('foodMenu').style.display = 'grid';
+        document.getElementById('drinkMenu').style.display = 'none';
+    } else if (menuType === 'drinks') {
+        document.getElementById('foodMenu').style.display = 'none';
+        document.getElementById('drinkMenu').style.display = 'grid';
+    }
+
+    
+}
+
+function initApp() {
+    initMenu('food', products);
+    initMenu('drink', drinks);
+}
+
+function initMenu(menuType, menuItems) {
+    let menuContainer = document.getElementById(`${menuType}Menu`);
+    menuContainer.innerHTML = ''; // Limpiar el contenido existente
+
+    menuItems.forEach((value, key) => {
+        let newDiv = document.createElement('div');
+        newDiv.classList.add('item');
+        newDiv.innerHTML = `
+            <img class="menu-item" src="image/${value.Image}"/>
+            <div class="title">${value.name}</div>
+            <div class="price">$${value.price.toLocaleString()}</div>
+            <button onclick="addToCard(${key + 1})">Agregar al Carrito</button>
+        `;
+        menuContainer.appendChild(newDiv);
+    });
+}
+
+initApp();
+
 
 
