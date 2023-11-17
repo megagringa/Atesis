@@ -129,23 +129,78 @@ let drinks = [
     {
         id: 13,
         name: 'Agua Mineral',
-        Image: 'agua.jpg',
+        Image: 'agua3.jpg',
         price: 500,
     },
     {
         id: 14,
         name: 'Coca-Cola',
         Image: 'cocacola.jpg',
-        price: 700,
+        price: 900,
     },
     {
         id: 15,
         name: 'Jugo de Naranja',
-        Image: 'jugo_naranja.jpg',
+        Image: 'jugo.jpg',
         price: 800,
+    },
+    {
+        id: 16,
+        name: 'Cerveza',
+        Image: 'cerveza.jpg',
+        price: 1100,
+    },
+    {
+        id: 17,
+        name: 'Cafe',
+        Image: 'cafe.jpg',
+        price: 800,
+    },
+    {
+        id: 18,
+        name: 'Vino',
+        Image: 'vino.jpg',
+        price: 1800,
+    },
+    {
+        id: 19,
+        name: 'Te',
+        Image: 'te.jpg',
+        price: 800,
+    },
+    {
+        id: 20,
+        name: 'Fernet con Coca',
+        Image: 'fcc.jpg',
+        price: 1400,
+    },
+    {
+        id: 21,
+        name: 'Cerveza Roja',
+        Image: 'roja.jpg',
+        price: 900,
+    },
+    {
+        id: 22,
+        name: 'Sprite',
+        Image: 'sprite.jpg',
+        price: 800,
+    },
+    {
+        id: 23,
+        name: 'Smoothy',
+        Image: 'smoo.jpg',
+        price: 1200,
+    },
+    {
+        id: 24,
+        name: 'Cerveza Negra',
+        Image: 'jugo_naranja.jpg',
+        price: 1100,
     },
     // Puedes agregar más bebidas según sea necesario
 ];
+
 
 let listCards = [];
 
@@ -206,7 +261,7 @@ function addToFoodCard(id) {
 }
 
 function addToDrinkCard(id) {
-    let menuIndex = id - products.length - 1;
+    let menuIndex = id <= products.length ? id - 1 : id - products.length - 1;
     if (menuIndex < 0) {
         menuIndex = id - 1;
     }
@@ -232,19 +287,7 @@ function addToDrinkCard(id) {
 }
 
 
-function getMenuPriceById(id) {
-    let menuType = id <= products.length ? 'food' : 'drink';
-    let menuIndex = id <= products.length ? id - 1 : id - products.length - 1;
-
-    return getMenuPrice(menuType, menuIndex);
-}
-
 // ... (tu código existente)
-
-
-
-
-
 
 
 function getMenuName(menuType, index) {
@@ -308,10 +351,18 @@ function getMenuPriceById(id) {
 function divideBill(people) {
     if (people <= 0) return;
 
-    let dividedTotal = total.textContent.replace(/,/g, '') / people;
-    dividedTotal = dividedTotal.toFixed(2);
+    // Obtener el valor numérico del total
+    let totalValue = parseFloat(total.textContent.replace(/,/g, '').replace('$', '')) || 0;
 
-    alert(`Cada persona paga: $${dividedTotal}`);
+    // Realizar la división solo si el total es un número válido
+    if (!isNaN(totalValue)) {
+        let dividedTotal = totalValue / people;
+        dividedTotal = dividedTotal.toFixed(2);
+
+        alert(`Cada persona paga: $${dividedTotal}`);
+    } else {
+        alert('Error al obtener el total.');
+    }
 }
 
 function showMenu(menuType) {
@@ -325,12 +376,12 @@ function showMenu(menuType) {
 
     
 }
-
 function initApp() {
     initMenu('food', products);
     initMenu('drink', drinks);
 }
 
+// Función para inicializar los menús en la interfaz
 function initMenu(menuType, menuItems) {
     let menuContainer = document.getElementById(`${menuType}Menu`);
     menuContainer.innerHTML = ''; // Limpiar el contenido existente
@@ -342,13 +393,76 @@ function initMenu(menuType, menuItems) {
             <img class="menu-item" src="image/${value.Image}"/>
             <div class="title">${value.name}</div>
             <div class="price">$${value.price.toLocaleString()}</div>
-            <button onclick="addToCard(${key + 1})">Agregar al Carrito</button>
+            <button onclick="addToCard(${value.id})">Agregar al Carrito</button>
         `;
         menuContainer.appendChild(newDiv);
     });
 }
 
+// Función para agregar productos al carrito
+function addToCard(id) {
+    let menuType = id <= products.length ? 'food' : 'drink';
+
+    if (menuType === 'food') {
+        addToFoodCard(id);
+    } else {
+        addToDrinkCard(id);
+    }
+}
+
+// Función para agregar productos de comida al carrito
+function addToFoodCard(id) {
+    let menuIndex = id - 1;
+    let existingProductIndex = listCards.findIndex((product) => product.id === id && product.menuType === 'food');
+
+    if (existingProductIndex !== -1) {
+        listCards[existingProductIndex].quantity++;
+        listCards[existingProductIndex].price = listCards[existingProductIndex].quantity * getMenuPrice('food', menuIndex);
+    } else {
+        let newProduct = {
+            id: id,
+            menuType: 'food',
+            name: getMenuName('food', menuIndex),
+            Image: getMenuImage('food', menuIndex),
+            price: getMenuPrice('food', menuIndex),
+            quantity: 1,
+        };
+        listCards.push(newProduct);
+    }
+
+    reloadCard();
+}
+
+// Función para agregar productos de bebida al carrito
+function addToDrinkCard(id) {
+    let menuIndex = id <= products.length ? id - 1 : id - products.length - 1;
+    if (menuIndex < 0) {
+        menuIndex = id - 1;
+    }
+
+    let existingProductIndex = listCards.findIndex((product) => product.id === id && product.menuType === 'drink');
+
+    if (existingProductIndex !== -1) {
+        listCards[existingProductIndex].quantity++;
+        listCards[existingProductIndex].price = listCards[existingProductIndex].quantity * getMenuPrice('drink', menuIndex);
+    } else {
+        let newProduct = {
+            id: id,
+            menuType: 'drink',
+            name: getMenuName('drink', menuIndex),
+            Image: getMenuImage('drink', menuIndex),
+            price: getMenuPrice('drink', menuIndex),
+            quantity: 1,
+        };
+        listCards.push(newProduct);
+    }
+
+    reloadCard();
+}
+
+// Resto de las funciones y eventos...
+
+// ... (definición de funciones restantes como reloadCard, getMenuName, getMenuImage, getMenuPriceById, divideBill, showMenu, etc.)
+
+// Inicializar la aplicación
 initApp();
-
-
-

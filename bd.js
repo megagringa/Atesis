@@ -74,5 +74,77 @@ export function getProducts() {
             Image: 'papa_cheddar.jpg',
             price: 1200,
         },
+        {
+            id: 13,
+            name: 'Agua Mineral',
+            Image: 'agua3.jpg',
+            price: 500,
+        },
+        {
+            id: 14,
+            name: 'Coca-Cola',
+            Image: 'cocacola.jpg',
+            price: 900,
+        },
+        {
+            id: 15,
+            name: 'Jugo de Naranja',
+            Image: 'jugo.jpg',
+            price: 800,
+        },
+        {
+            id: 16,
+            name: 'Cerveza',
+            Image: 'cerveza.jpg',
+            price: 1100,
+        },
+        {
+            id: 17,
+            name: 'Cafe',
+            Image: 'cafe.jpg',
+            price: 800,
+        },
+        {
+            id: 18,
+            name: 'Vino',
+            Image: 'vino.jpg',
+            price: 1800,
+        },
+        {
+            id: 19,
+            name: 'Te',
+            Image: 'te.jpg',
+            price: 800,
+        },
+        {
+            id: 20,
+            name: 'Fernet con Coca',
+            Image: 'fcc.jpg',
+            price: 1400,
+        },
+        {
+            id: 21,
+            name: 'Cerveza Roja',
+            Image: 'roja.jpg',
+            price: 900,
+        },
+        {
+            id: 22,
+            name: 'Sprite',
+            Image: 'sprite.jpg',
+            price: 800,
+        },
+        {
+            id: 23,
+            name: 'Smoothy',
+            Image: 'smoo.jpg',
+            price: 1200,
+        },
+        {
+            id: 24,
+            name: 'Cerveza Negra',
+            Image: 'jugo_naranja.jpg',
+            price: 1100,
+        },
     ];
 }

@@ -117,6 +117,7 @@ header .shopping span {
     justify-content: center;
     align-items: center;
     font-weight: bold;
+    font-size: 30px;
 }
 
 .card .checkOut .buttons {
@@ -186,5 +187,20 @@ body.active .container {
 
 .card .checkOut .buttons div:last-child {
     margin-right: 15px;
+}
+
+.menuButton {
+    background-color: #1c1f25;
+    color: #fff;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.menuButton:hover {
+    background-color: #DAA520; /* Color de fondo al pasar el mouse sobre el botón */
 }
 
