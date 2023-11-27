@@ -195,7 +195,7 @@ let drinks = [
     {
         id: 24,
         name: 'Cerveza Negra',
-        Image: 'jugo_naranja.jpg',
+        Image: 'negra.jpg',
         price: 1100,
     },
     // Puedes agregar más bebidas según sea necesario
@@ -351,19 +351,30 @@ function getMenuPriceById(id) {
 function divideBill(people) {
     if (people <= 0) return;
 
-    // Obtener el valor numérico del total
-    let totalValue = parseFloat(total.textContent.replace(/,/g, '').replace('$', '')) || 0;
+    let totalValue = totalValueFromListCards();
+    
+    console.log('Total Value:', totalValue);
 
-    // Realizar la división solo si el total es un número válido
     if (!isNaN(totalValue)) {
         let dividedTotal = totalValue / people;
         dividedTotal = dividedTotal.toFixed(2);
 
-        alert(`Cada persona paga: $${dividedTotal}`);
+        console.log('Divided Total:', dividedTotal);
+
+        console.log(`Total: $${totalValue}, Cliente: ${people}, Cada persona paga: $${dividedTotal}`);
+        alert(`Total: $${totalValue}, Cliente: ${people}, Cada persona Paga: $${dividedTotal}`);
     } else {
         alert('Error al obtener el total.');
     }
 }
+
+function totalValueFromListCards() {
+    return listCards.reduce((total, product) => total + product.price, 0);
+}
+
+
+
+
 
 function showMenu(menuType) {
     if (menuType === 'food') {
